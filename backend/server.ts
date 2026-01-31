@@ -4,24 +4,10 @@
 
 import http, { IncomingMessage, ServerResponse } from 'http';
 import url from 'url';
-import { Pool } from 'pg';
 import dotenv from 'dotenv';
-
 dotenv.config();
+import { checkDb } from './db/pool';
 
-// ---- Database ----
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
-
-async function checkDbConnection(): Promise<void> {
-  try {
-    await pool.query('SELECT 1');
-    console.log('Database connected');
-  } catch (error) {
-    console.error('Database connection failed', error);
-  }
-}
 
 // ---- Server ----
 const PORT = Number(process.env.PORT);
@@ -52,5 +38,6 @@ const server = http.createServer(
 
 server.listen(PORT, async () => {
   console.log(`Server running on port ${PORT}`);
-  await checkDbConnection();
+   await checkDb();
+   console.log('Database connected');
 });
