@@ -6,7 +6,9 @@ import http, { IncomingMessage, ServerResponse } from 'http';
 import url from 'url';
 import dotenv from 'dotenv';
 dotenv.config();
+
 import { checkDb } from './db/pool';
+import { authRoutes } from './routes/auth.routes';
 
 
 // ---- Server ----
@@ -26,6 +28,11 @@ const server = http.createServer(
       );
       return;
     }
+
+    if (await authRoutes(req, res)) {
+      return;
+    }
+
 
     res.writeHead(404, { 'Content-Type': 'application/json' });
     res.end(
