@@ -16,10 +16,10 @@ process.on('SIGINT', async () => {
 
 export async function query<T extends QueryResultRow = QueryResultRow>(
   text: string,
-  params?: any[]
+  params?: readonly unknown[]
 ): Promise<QueryResult<T>> {
   try {
-    return await pool.query<T>(text, params);
+    return await pool.query<T>(text, params ? [...params] : params);
   } catch (error) {
     console.error('DB query error:', {
       text,

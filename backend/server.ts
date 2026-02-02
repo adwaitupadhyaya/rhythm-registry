@@ -9,6 +9,7 @@ dotenv.config();
 
 import { checkDb } from './db/pool';
 import { authRoutes } from './routes/auth.routes';
+import { userRoutes } from './routes/user.routes';
 
 
 // ---- Server ----
@@ -30,6 +31,10 @@ const server = http.createServer(
     }
 
     if (await authRoutes(req, res)) {
+      return;
+    }
+
+    if (await userRoutes(req, res)) {
       return;
     }
 

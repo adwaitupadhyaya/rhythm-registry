@@ -23,3 +23,5 @@ export interface LoginResponse {
   token: string;
   user: AuthUserResponse;
 }
+
+export type UserRole = 'super_admin' | 'artist_manager' | 'artist';

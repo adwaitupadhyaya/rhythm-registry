@@ -1,12 +1,5 @@
 import { query } from '../db/pool';
-
-export interface User {
-  id: number;
-  name: string;
-  email: string;
-  password_hash: string;
-  role: string;
-}
+import { User } from '../interfaces/user.interface';
 
 export async function findUserByEmail(email: string): Promise<User | null> {
   const result = await query<User>(
@@ -31,4 +24,11 @@ export async function createUser(
   );
 
   return result.rows[0];
+}
+
+export async function findAllUsers(): Promise<User[]> {
+  const result = await query<User>(
+    `SELECT id, first_name, last_name, email, role FROM users`
+  );
+  return result.rows;
 }
