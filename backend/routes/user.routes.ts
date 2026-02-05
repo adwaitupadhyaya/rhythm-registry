@@ -16,7 +16,10 @@ export async function userRoutes(
 ): Promise<boolean> {
   const authReq = req as AuthenticatedRequest;
 
-  if (req.url === "/api/users" && req.method === "GET") {
+  const url = new URL(req.url!, `http://${req.headers.host}`);
+  const pathname = url.pathname;
+
+  if (pathname === "/api/users" && req.method === "GET") {
     await runMiddleware(authReq, res, authenticateJwt);
     if (res.writableEnded) return true;
 
@@ -27,7 +30,7 @@ export async function userRoutes(
     return true;
   }
 
-  if (req.url === "/api/users" && req.method === "POST") {
+  if (pathname === "/api/users" && req.method === "POST") {
     await runMiddleware(authReq, res, authenticateJwt);
     if (res.writableEnded) return true;
 
@@ -38,7 +41,7 @@ export async function userRoutes(
     return true;
   }
 
-  const match = req.url?.match(/^\/api\/users\/(\d+)$/);
+  const match = pathname.match(/^\/api\/users\/(\d+)$/);
   if (match) {
     const id = Number(match[1]);
 
