@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 class HttpClient {
   private baseURL: string;
@@ -8,18 +8,18 @@ class HttpClient {
   }
 
   private getToken(): string | null {
-    return localStorage.getItem('token');
+    return localStorage.getItem("token");
   }
 
   private getHeaders(customHeaders: Record<string, string> = {}): HeadersInit {
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       ...customHeaders,
     };
 
     const token = this.getToken();
     if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
+      headers["Authorization"] = `Bearer ${token}`;
     }
 
     return headers;
@@ -27,14 +27,14 @@ class HttpClient {
 
   private async handleResponse<T>(response: Response): Promise<T> {
     if (response.status === 401) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.dispatchEvent(new CustomEvent('auth:logout'));
-      throw new Error('Session expired. Please login again.');
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      window.dispatchEvent(new CustomEvent("auth:logout"));
+      throw new Error("Session expired. Please login again.");
     }
 
     if (response.status === 403) {
-      throw new Error('You do not have permission to perform this action.');
+      throw new Error("You do not have permission to perform this action.");
     }
 
     if (response.status === 204) {
@@ -44,7 +44,7 @@ class HttpClient {
     const data = await response.json();
 
     if (!response.ok) {
-      const errorMessage = data.error || data.message || 'An error occurred';
+      const errorMessage = data.error || data.message || "An error occurred";
       throw new Error(errorMessage);
     }
 
@@ -53,7 +53,7 @@ class HttpClient {
 
   async get<T>(url: string): Promise<T> {
     const response = await fetch(`${this.baseURL}${url}`, {
-      method: 'GET',
+      method: "GET",
       headers: this.getHeaders(),
     });
 
@@ -62,7 +62,7 @@ class HttpClient {
 
   async post<T>(url: string, data: unknown): Promise<T> {
     const response = await fetch(`${this.baseURL}${url}`, {
-      method: 'POST',
+      method: "POST",
       headers: this.getHeaders(),
       body: JSON.stringify(data),
     });
@@ -72,7 +72,7 @@ class HttpClient {
 
   async put<T>(url: string, data: unknown): Promise<T> {
     const response = await fetch(`${this.baseURL}${url}`, {
-      method: 'PUT',
+      method: "PUT",
       headers: this.getHeaders(),
       body: JSON.stringify(data),
     });
@@ -82,7 +82,7 @@ class HttpClient {
 
   async delete<T>(url: string): Promise<T> {
     const response = await fetch(`${this.baseURL}${url}`, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: this.getHeaders(),
     });
 

@@ -11,6 +11,7 @@ import { checkDb } from "./db/pool";
 import { authRoutes } from "./routes/auth.routes";
 import { userRoutes } from "./routes/user.routes";
 import { corsMiddleware } from "./middleware/cors.middleware";
+import { artistRoutes } from "./routes/artist.routes";
 
 const PORT = Number(process.env.PORT);
 
@@ -37,6 +38,10 @@ const server = http.createServer(
     }
 
     if (await userRoutes(req, res)) {
+      return;
+    }
+
+    if (await artistRoutes(req, res)) {
       return;
     }
 

@@ -1,6 +1,12 @@
+import { PoolClient } from "pg";
 import { query } from "../db/pool";
 import { UserRole } from "../interfaces/auth.interfaces";
-import { User, UserRow } from "../interfaces/user.interface";
+import {
+  CreateUserRequest,
+  User,
+  UserResponse,
+  UserRow,
+} from "../interfaces/user.interface";
 
 export async function findUserByEmail(email: string): Promise<User | null> {
   const result = await query<User>("SELECT * FROM users WHERE email = $1", [
@@ -36,6 +42,23 @@ export async function createUser(
      VALUES ($1, $2, $3, $4, $5)
      RETURNING id, first_name, last_name, email, role`,
     [first_name, last_name, email, passwordHash, role],
+  );
+
+  return result.rows[0];
+}
+
+export async function createUserTx(
+  client: PoolClient,
+  user: CreateUserRequest,
+): Promise<UserResponse> {
+  const result = await client.query<UserResponse>(
+    `
+    INSERT INTO "users"
+    (first_name, last_name, email, password_hash, role)
+    VALUES ($1,$2,$3,$4,$5)
+    RETURNING id, first_name, last_name, email, role
+    `,
+    [user.first_name, user.last_name, user.email, user.password, user.role],
   );
 
   return result.rows[0];
