@@ -1,4 +1,5 @@
 export type UserRole = "super_admin" | "artist_manager" | "artist";
+export type Gender = "male" | "female" | "other";
 
 export interface User {
   name: string;
@@ -59,4 +60,41 @@ export interface Route {
   requiresAuth?: boolean;
   allowedRoles?: UserRole[];
   redirectIfAuth?: string;
+}
+
+export interface Artist {
+  id: number;
+  name: string;
+  dob: string;
+  gender: Gender;
+  address: string;
+  first_release_year: number;
+  no_of_albums_released: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateArtistRequest {
+  name: string;
+  dob: string;
+  gender: Gender;
+  address: string;
+  first_release_year: number;
+  no_of_albums_released: number;
+}
+
+export interface UpdateArtistRequest {
+  name?: string;
+  dob?: string;
+  gender?: Gender;
+  address?: string;
+  first_release_year?: number;
+  no_of_albums_released?: number;
+}
+
+export interface CsvImportResponse {
+  success: boolean;
+  imported: number;
+  failed: number;
+  errors?: string[];
 }

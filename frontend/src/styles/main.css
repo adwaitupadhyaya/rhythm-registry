@@ -129,8 +129,8 @@ h3 {
   justify-content: center;
   background: linear-gradient(
     135deg,
-    var(--color-primary) 0%,
-    var(--color-primary-dark) 100%
+    var(--color-secondary) 0%,
+    var(--color-background) 100%
   );
   padding: var(--space-xl);
 }
