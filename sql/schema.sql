@@ -29,6 +29,7 @@ CREATE TABLE users (
 
 CREATE TABLE artist (
   id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   dob DATE,
   gender TEXT,

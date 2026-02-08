@@ -98,3 +98,28 @@ export interface CsvImportResponse {
   failed: number;
   errors?: string[];
 }
+
+export interface Song {
+  id: number;
+  title: string;
+  album: string | null;
+  genre: string | null;
+  released_year: number | null;
+  artist_id: number;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface CreateSongRequest {
+  title: string;
+  album?: string;
+  genre?: string;
+  released_year?: number;
+}
+
+export interface UpdateSongRequest {
+  title?: string;
+  album?: string;
+  genre?: string;
+  released_year?: number;
+}

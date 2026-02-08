@@ -12,6 +12,7 @@ import { authRoutes } from "./routes/auth.routes";
 import { userRoutes } from "./routes/user.routes";
 import { corsMiddleware } from "./middleware/cors.middleware";
 import { artistRoutes } from "./routes/artist.routes";
+import { songRoutes } from "./routes/song.routes";
 
 const PORT = Number(process.env.PORT);
 
@@ -42,6 +43,10 @@ const server = http.createServer(
     }
 
     if (await artistRoutes(req, res)) {
+      return;
+    }
+
+    if (await songRoutes(req, res)) {
       return;
     }
 

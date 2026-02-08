@@ -232,7 +232,6 @@ export async function importArtistCsvController(
       errors: errors.slice(0, 10), // Return first 10 errors only
     });
   } catch (error) {
-    console.error("CSV import error:", error);
     return sendJson(res, 500, {
       error: error instanceof Error ? error.message : "Failed to import CSV",
     });
@@ -281,7 +280,6 @@ export async function exportArtistCsvController(
     });
     res.end(csv);
   } catch (error) {
-    console.error("CSV export error:", error);
     return sendJson(res, 500, { error: "Failed to export CSV" });
   }
 }

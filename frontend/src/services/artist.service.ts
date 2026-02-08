@@ -14,15 +14,12 @@ class ArtistService {
       offset: params.offset.toString(),
     });
 
-    // CRITICAL FIX: Backend returns { artists: [], limit, offset }
-    // We need to extract just the artists array
     const response = await http.get<{
       artists: Artist[];
       limit: number;
       offset: number;
     }>(`/api/artists?${queryParams}`);
 
-    // Return just the artists array
     return response.artists;
   }
 
