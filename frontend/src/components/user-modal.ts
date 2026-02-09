@@ -122,7 +122,6 @@ export function openUserModal(
 
   document.body.appendChild(overlay);
 
-  const modal = overlay.querySelector(".modal") as HTMLElement;
   const form = document.getElementById("user-form") as HTMLFormElement;
   const closeBtn = document.getElementById("modal-close");
   const cancelBtn = document.getElementById("modal-cancel");

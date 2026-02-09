@@ -30,7 +30,7 @@
 
 .auth-card {
   width: 100%;
-  max-width: 420px;
+  max-width: 650px;
   background: var(--color-surface);
   border-radius: var(--radius-lg);
   padding: var(--space-2xl);

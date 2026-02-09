@@ -42,9 +42,6 @@ export async function renderSongsPage(
         <div class="container">
           <!-- Artist Name and Songs Title Below Header -->
           <div style="margin-bottom: 2rem;">
-            <button id="back-to-artists" class="btn btn--ghost btn--sm" style="margin-bottom: 1rem;">
-              ← Back to Artists
-            </button>
             <h1 style="font-size: 1.875rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.25rem;">
               ${escapeHtml(artistName)}
             </h1>

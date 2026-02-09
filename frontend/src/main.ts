@@ -1,9 +1,13 @@
 import "./styles/main.css";
 import Router from "./utils/router";
+import { initTheme } from "./utils/theme";
 import { renderLogin } from "./pages/login";
 import { renderRegister } from "./pages/register";
 import { renderDashboard } from "./pages/dashboard";
 import type { Route } from "./types";
+
+// Initialize theme
+initTheme();
 
 const routes: Route[] = [
   {

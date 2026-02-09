@@ -96,7 +96,7 @@ export async function renderDashboard(): Promise<void> {
   `;
 
   setupDashboardHeader(() => authService.logout());
-  setupTabs(user.role);
+  setupTabs();
 
   const firstTab = getAvailableTabs(user.role)[0];
   if (firstTab) {
@@ -152,7 +152,7 @@ function renderTabs(role: string): string {
   `;
 }
 
-function setupTabs(role: string): void {
+function setupTabs(): void {
   const tabButtons = document.querySelectorAll(".tabs__tab");
 
   tabButtons.forEach((button) => {

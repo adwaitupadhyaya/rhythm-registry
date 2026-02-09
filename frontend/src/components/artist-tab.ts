@@ -4,6 +4,7 @@ import { authService } from "@/services/auth.service";
 import { showToast } from "@/utils/toast";
 import { openArtistModal } from "./artist-modal";
 import { openCsvImportModal } from "./csv-import-modal";
+import { formatGender } from "@/utils/formatGender";
 
 import type { Artist } from "@/types";
 import { renderSongsPage } from "@/pages/songs";
@@ -297,10 +298,6 @@ function setupPagination(): void {
     await loadArtists();
     document.querySelector(".card")?.scrollIntoView({ behavior: "smooth" });
   });
-}
-
-function formatGender(gender: string): string {
-  return gender.charAt(0).toUpperCase() + gender.slice(1);
 }
 
 function formatDate(dateStr: string): string {
