@@ -6,6 +6,10 @@ export function corsMiddleware(
 ): boolean {
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:5174");
   res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://rhythm-registry.vercel.app",
+  );
+  res.setHeader(
     "Access-Control-Allow-Methods",
     "GET, POST, PUT, DELETE, OPTIONS",
   );
