@@ -1,7 +1,3 @@
-/**
- * Entry point for Rhythm Registry backend server.
- */
-
 import http, { IncomingMessage, ServerResponse } from "http";
 import url from "url";
 import dotenv from "dotenv";

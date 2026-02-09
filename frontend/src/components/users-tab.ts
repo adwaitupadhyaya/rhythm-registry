@@ -1,4 +1,5 @@
 import { userService } from "@/services/user.service";
+import { showConfirmModal } from "./confirm-modal";
 import { showToast } from "@/utils/toast";
 import { openUserModal } from "./user-modal";
 import type { User, GetUsersResponse } from "@/types";
@@ -157,18 +158,23 @@ function setupActionButtons(): void {
       const id = btn.getAttribute("data-id");
       const name = btn.getAttribute("data-name");
 
-      if (
-        id &&
-        confirm(
-          `Are you sure you want to delete ${name}? This action cannot be undone.`,
-        )
-      ) {
-        try {
-          await userService.delete(parseInt(id));
-          showToast("User deleted successfully", "success");
-          await loadUsers();
-        } catch (error) {
-          showToast((error as Error).message, "error");
+      if (id) {
+        const confirmed = await showConfirmModal({
+          title: "Delete User",
+          message: `Are you sure you want to delete ${name}? This action cannot be undone.`,
+          confirmText: "Delete",
+          cancelText: "Cancel",
+          isDangerous: true,
+        });
+
+        if (confirmed) {
+          try {
+            await userService.delete(parseInt(id));
+            showToast("User deleted successfully", "success");
+            await loadUsers();
+          } catch (error) {
+            showToast((error as Error).message, "error");
+          }
         }
       }
     });

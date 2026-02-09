@@ -12,6 +12,7 @@ import {
   deleteArtistController,
   importArtistCsvController,
   exportArtistCsvController,
+  getMyArtistController,
 } from "../controllers/artist.controller";
 
 export async function artistRoutes(
@@ -35,6 +36,21 @@ export async function artistRoutes(
     if (res.writableEnded) return true;
 
     await exportArtistCsvController(authReq, res);
+    return true;
+  }
+
+  if (pathname === "/api/artists/me" && req.method === "GET") {
+    await runMiddleware(authReq, res, authenticateJwt);
+    if (res.writableEnded) return true;
+
+    await runMiddleware(
+      authReq,
+      res,
+      requireRole(["artist", "super_admin", "artist_manager"]),
+    );
+    if (res.writableEnded) return true;
+
+    await getMyArtistController(authReq, res);
     return true;
   }
 

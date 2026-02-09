@@ -4,6 +4,7 @@ import {
   updateArtistById,
   deleteArtistById,
   findArtistById,
+  findArtistByUserId,
 } from "../models/artist.model";
 
 import {
@@ -36,4 +37,8 @@ export async function deleteArtistService(id: number) {
     throw new Error("Artist not found");
   }
   return true;
+}
+
+export async function getArtistByUserIdService(userId: number) {
+  return findArtistByUserId(userId);
 }

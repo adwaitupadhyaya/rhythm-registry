@@ -28,6 +28,17 @@ export async function getArtists(
   return result.rows;
 }
 
+export async function findArtistByUserId(
+  userId: number,
+): Promise<{ id: number; user_id: number | null } | null> {
+  const result = await query<{ id: number; user_id: number | null }>(
+    `SELECT id, user_id FROM artist WHERE user_id = $1`,
+    [userId],
+  );
+
+  return result.rows[0] || null;
+}
+
 export async function insertArtist(artist: {
   name: string;
   dob?: string;

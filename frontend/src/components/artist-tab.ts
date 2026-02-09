@@ -1,12 +1,12 @@
 import { artistService } from "@/services/artist.service";
+import { showConfirmModal } from "./confirm-modal";
 import { authService } from "@/services/auth.service";
 import { showToast } from "@/utils/toast";
 import { openArtistModal } from "./artist-modal";
 import { openCsvImportModal } from "./csv-import-modal";
+
 import type { Artist } from "@/types";
-import { formatDate } from "@/utils/formatDate";
-import { formatGender } from "@/utils/formatGender";
-import { escapeHtml } from "@/utils/escapeHtml";
+import { renderSongsPage } from "@/pages/songs";
 
 let currentPage = 1;
 const limit = 10;
@@ -58,7 +58,7 @@ export async function renderArtistsTab(): Promise<void> {
     const createBtn = document.getElementById("create-artist-btn");
     createBtn?.addEventListener("click", () => {
       openArtistModal("create", null, async () => {
-        currentPage = 1; // Reset to first page after create
+        currentPage = 1;
         await loadArtists();
       });
     });
@@ -66,7 +66,7 @@ export async function renderArtistsTab(): Promise<void> {
     const importBtn = document.getElementById("import-csv-btn");
     importBtn?.addEventListener("click", () => {
       openCsvImportModal(async () => {
-        currentPage = 1; // Reset to first page
+        currentPage = 1;
         await loadArtists();
       });
     });
@@ -114,7 +114,6 @@ async function loadArtists(): Promise<void> {
     }
 
     if (artists.length === 0 && currentPage > 1) {
-      // No results on this page, go back to previous page
       currentPage--;
       await loadArtists();
       return;
@@ -133,7 +132,7 @@ async function loadArtists(): Promise<void> {
               <th>First Release</th>
               <th>Albums</th>
               <th>Created</th>
-              ${canManage ? "<th>Actions</th>" : ""}
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -167,9 +166,7 @@ async function loadArtists(): Promise<void> {
     `;
 
     // Setup action buttons
-    if (canManage) {
-      setupActionButtons();
-    }
+    setupActionButtons(canManage);
     setupPagination();
   } catch (error) {
     showToast((error as Error).message, "error");
@@ -200,64 +197,87 @@ function renderArtistRow(artist: Artist, canManage: boolean): string {
       <td>${artist.first_release_year}</td>
       <td>${artist.no_of_albums_released}</td>
       <td>${formatDate(artist.created_at)}</td>
-      ${
-        canManage
-          ? `
-        <td>
-          <div class="action-buttons">
+      <td>
+        <div class="action-buttons">
+          <button class="btn btn--ghost btn--sm view-songs" data-id="${artist.id}" data-name="${escapeHtml(artist.name)}" title="View Songs">
+            🎵
+          </button>
+          ${
+            canManage
+              ? `
             <button class="btn btn--ghost btn--sm edit-artist" data-artist='${JSON.stringify(artist)}' title="Edit">
               ✏️
             </button>
             <button class="btn btn--ghost btn--sm delete-artist" data-id="${artist.id}" data-name="${escapeHtml(artist.name)}" title="Delete">
               🗑️
             </button>
-          </div>
-        </td>
-      `
-          : ""
-      }
+          `
+              : ""
+          }
+        </div>
+      </td>
     </tr>
   `;
 }
 
-function setupActionButtons(): void {
-  // Edit buttons
-  const editButtons = document.querySelectorAll(".edit-artist");
-  editButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const artistData = btn.getAttribute("data-artist");
-      if (artistData) {
-        const artist = JSON.parse(artistData) as Artist;
-        openArtistModal("edit", artist, async () => {
-          await loadArtists();
-        });
-      }
-    });
-  });
-
-  // Delete buttons
-  const deleteButtons = document.querySelectorAll(".delete-artist");
-  deleteButtons.forEach((btn) => {
+function setupActionButtons(canManage: boolean): void {
+  // View Songs buttons (available to all)
+  const viewSongsButtons = document.querySelectorAll(".view-songs");
+  viewSongsButtons.forEach((btn) => {
     btn.addEventListener("click", async () => {
-      const id = btn.getAttribute("data-id");
-      const name = btn.getAttribute("data-name");
+      const artistId = parseInt(btn.getAttribute("data-id") || "0");
+      const artistName = btn.getAttribute("data-name") || "";
 
-      if (
-        id &&
-        confirm(
-          `Are you sure you want to delete ${name}? This action cannot be undone.`,
-        )
-      ) {
-        try {
-          await artistService.delete(parseInt(id));
-          showToast("Artist deleted successfully", "success");
-          await loadArtists();
-        } catch (error) {
-          showToast((error as Error).message, "error");
-        }
+      if (artistId) {
+        await renderSongsPage(artistId, artistName);
       }
     });
   });
+
+  if (canManage) {
+    // Edit buttons
+    const editButtons = document.querySelectorAll(".edit-artist");
+    editButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const artistData = btn.getAttribute("data-artist");
+        if (artistData) {
+          const artist = JSON.parse(artistData) as Artist;
+          openArtistModal("edit", artist, async () => {
+            await loadArtists();
+          });
+        }
+      });
+    });
+
+    // Delete buttons
+    const deleteButtons = document.querySelectorAll(".delete-artist");
+    deleteButtons.forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const id = btn.getAttribute("data-id");
+        const name = btn.getAttribute("data-name");
+
+        if (id) {
+          const confirmed = await showConfirmModal({
+            title: "Delete Artist",
+            message: `Are you sure you want to delete ${name}? This action cannot be undone.`,
+            confirmText: "Delete",
+            cancelText: "Cancel",
+            isDangerous: true,
+          });
+
+          if (confirmed) {
+            try {
+              await artistService.delete(parseInt(id));
+              showToast("Artist deleted successfully", "success");
+              await loadArtists();
+            } catch (error) {
+              showToast((error as Error).message, "error");
+            }
+          }
+        }
+      });
+    });
+  }
 }
 
 function setupPagination(): void {
@@ -268,7 +288,6 @@ function setupPagination(): void {
     if (currentPage > 1) {
       currentPage--;
       await loadArtists();
-      // Scroll to top of table
       document.querySelector(".card")?.scrollIntoView({ behavior: "smooth" });
     }
   });
@@ -276,7 +295,29 @@ function setupPagination(): void {
   nextBtn?.addEventListener("click", async () => {
     currentPage++;
     await loadArtists();
-    // Scroll to top of table
     document.querySelector(".card")?.scrollIntoView({ behavior: "smooth" });
   });
+}
+
+function formatGender(gender: string): string {
+  return gender.charAt(0).toUpperCase() + gender.slice(1);
+}
+
+function formatDate(dateStr: string): string {
+  try {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  } catch {
+    return dateStr;
+  }
+}
+
+function escapeHtml(str: string): string {
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
 }

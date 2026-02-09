@@ -9,6 +9,7 @@ import {
   createArtistService,
   updateArtistService,
   deleteArtistService,
+  getArtistByUserIdService,
 } from "../services/artist.service";
 
 import {
@@ -32,6 +33,32 @@ export async function getAllArtistsController(
 
     const artists = await getArtistsService(limit, offset);
     return sendJson(res, 200, { artists, limit, offset });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return sendJson(res, 500, { error: err.message });
+    }
+    return sendJson(res, 500, { error: "Internal error" });
+  }
+}
+
+export async function getMyArtistController(
+  req: AuthenticatedRequest,
+  res: ServerResponse,
+) {
+  try {
+    const userId = req.user?.id;
+    if (!userId) {
+      return sendJson(res, 401, { error: "Unauthorized" });
+    }
+
+    const artist = await getArtistByUserIdService(userId);
+    if (!artist) {
+      return sendJson(res, 404, {
+        error: "No artist profile found for your account",
+      });
+    }
+
+    return sendJson(res, 200, artist);
   } catch (err: unknown) {
     if (err instanceof Error) {
       return sendJson(res, 500, { error: err.message });

@@ -99,27 +99,29 @@ export interface CsvImportResponse {
   errors?: string[];
 }
 
+export type Genre = "rnb" | "country" | "classic" | "rock" | "jazz";
+
 export interface Song {
   id: number;
-  title: string;
-  album: string | null;
-  genre: string | null;
-  released_year: number | null;
   artist_id: number;
-  created_at?: string;
-  updated_at?: string;
+  title: string;
+  album_name: string;
+  genre: Genre;
+  release_date: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface CreateSongRequest {
   title: string;
-  album?: string;
-  genre?: string;
-  released_year?: number;
+  album_name: string;
+  genre: Genre;
+  release_date: string;
 }
 
 export interface UpdateSongRequest {
   title?: string;
-  album?: string;
-  genre?: string;
-  released_year?: number;
+  album_name?: string;
+  genre?: Genre;
+  release_date?: string;
 }
