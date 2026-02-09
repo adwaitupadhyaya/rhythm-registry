@@ -6,7 +6,7 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "railway:start": "npm run build && npm run start"
+    "render:build": "npm install && npm run build"
   },
   "keywords": [],
   "author": "",
@@ -25,5 +25,8 @@
     "@types/pg": "^8.16.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=16.x"
   }
 }
