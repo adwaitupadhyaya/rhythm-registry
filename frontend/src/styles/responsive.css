@@ -1,0 +1,59 @@
+@media (max-width: 768px) {
+  .dashboard-header {
+    padding: var(--space-md);
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .dashboard-header__user {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .dashboard-main {
+    padding: var(--space-lg);
+  }
+
+  .card__header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-md);
+  }
+
+  .table-container {
+    overflow-x: scroll;
+  }
+
+  .pagination {
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .modal-content,
+  .modal {
+    max-width: 90vw;
+    width: 100%;
+  }
+
+  .auth-card {
+    padding: var(--space-lg);
+  }
+}
+
+@media (max-width: 480px) {
+  .toast-container {
+    top: var(--space-sm);
+    right: var(--space-sm);
+    left: var(--space-sm);
+  }
+
+  .toast {
+    min-width: auto;
+  }
+
+  .tabs__list {
+    gap: var(--space-md);
+    overflow-x: auto;
+    padding-bottom: var(--space-sm);
+  }
+}
