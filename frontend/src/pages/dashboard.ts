@@ -6,6 +6,8 @@ import {
 import { renderUsersTab } from "@/components/users-tab";
 import { renderArtistsTab } from "@/components/artist-tab";
 import { renderSongsPage } from "@/pages/songs";
+import { http } from "@/services/http";
+import { Artist } from "@/types";
 
 export async function renderDashboard(): Promise<void> {
   const app = document.getElementById("app");
@@ -19,18 +21,10 @@ export async function renderDashboard(): Promise<void> {
 
   if (user.role === "artist") {
     try {
-      const response = await fetch("/api/artists/me", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-
-      if (response.ok) {
-        const artist = await response.json();
-        if (artist && artist.id) {
-          await renderSongsPage(artist.id, artist.name);
-          return;
-        }
+      const artist = await http.get<Artist>("/api/artists/me");
+      if (artist && artist.id) {
+        await renderSongsPage(artist.id, artist.name);
+        return;
       }
 
       app.innerHTML = `
